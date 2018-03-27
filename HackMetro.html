@@ -1,9 +1,90 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <body>
+<header>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>IOT hack the metro</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 90%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+</header>
+<body>
+    <div id="map"></div>
+    <script>
+        /*Variables for HTTP*/
+        var url = "http://localhost:3000";
+        var feed = new Object();
+        var Req = new XMLHttpRequest();
 
-    </body>
+        /*Make HTTP request*/
+        Req.onreadystatechange = function() {
+            console.log("State change");
+            if(this.readyState == 4 && this.status == "200"){
+                console.log(this.readyState + this.status);
+                feed = JSON.parse(this.responseText);
+            }
+        }
+        Req.open('GET', url, true);
+        Req.send();
+
+        /*Map here*/
+        var data;	// for the json data 
+        
+        request = new XMLHttpRequest();
+        request.open("GET", 'data.json', true);
+        
+        request.onreadystatechange = function()
+        {
+            if(request.readyState == 4 && request.status == 200)
+            {
+                data = JSON.parse(this.responseText);
+            }
+        }
+        
+        
+        request.send();	
+        
+        function initMap() 
+        {
+            var map = new google.maps.Map(document.getElementById('map'), 
+            {
+                zoom: 13,
+                center: new google.maps.LatLng(39.7392,-104.9903) // centers on denver
+            });
+        }
+        
+        // maybe we don't need a function here?
+        function placeMarker(data) 
+        {
+            for (var i = 0; i < data.length; i++) 
+            {
+                var tempDest = data[i];
+                var lat1 = tempDest.position.latitude;
+                var lng1 = tempDest.position.longitude;
+                var dest = {lat: lat1, lng: lng1};
+                
+                var marker = new google.maps.Marker({
+                position: dest,
+                map: map
+                });
+            }
+        }
+		
+	
+ </script>
+	
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyElcIii0J75BVIUTsFpsx8wBi8HU4A6g&callback=initMap">
+</script>
+</body>
 </html>
