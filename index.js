@@ -5,6 +5,7 @@ var http = require('http');
 var GtfsRealtimeBindings = require('gtfs-realtime-bindings');
 var request = require('request');
 var fs = require("fs");
+var html = fs.readFileSync('HackMetro.html');
 
 /*Varriables*/
 const hostname = '';
@@ -26,6 +27,15 @@ var requestSettings = {
 
 // Server is running
 console.log('running');
+
+var server = http.createServer(function(req, res) {
+
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.end(html);
+
+});
+/*Listening to this port*/
+server.listen(3001);
 
 /*Create server to parse data*/
 var server = http.createServer(function(req, res) {
@@ -60,7 +70,6 @@ var server = http.createServer(function(req, res) {
       console.log("Response sent!");
     }
   });
-
 });
 /*Listening to this port*/
 server.listen(3000);
