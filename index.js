@@ -6,10 +6,7 @@ var GtfsRealtimeBindings = require('gtfs-realtime-bindings');
 var request = require('request');
 var fs = require("fs");
 var html = fs.readFileSync('HackMetro.html');
-
-/*Varriables*/
-const hostname = '';
-const port = 3000;
+var stops = fs.readFileSync('stops.json');
 
 /*Settings for getting rtd data*/
 var requestSettings = {
@@ -37,8 +34,21 @@ var server = http.createServer(function(req, res) {
 /*Listening to this port*/
 server.listen(3001);
 
-/*Create server to parse data*/
 var server = http.createServer(function(req, res) {
+
+  res.writeHead(200, {
+    'Content-Length': Buffer.byteLength(stops),
+    'Content-Type': 'text/JSON',
+    'Access-Control-Allow-Origin': '*' });
+  res.statusCode = 200;
+  res.end(stops);
+
+});
+/*Listening to this port*/
+server.listen(3002);
+
+/*Create server to parse data*/
+var server1 = http.createServer(function(req, res) {
 
   /*Get rtd*/
   request(requestSettings, function (error, response, body) {
@@ -72,4 +82,4 @@ var server = http.createServer(function(req, res) {
   });
 });
 /*Listening to this port*/
-server.listen(3000);
+server1.listen(3000);
